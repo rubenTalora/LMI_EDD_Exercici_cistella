@@ -1,7 +1,4 @@
-// cistella.js 
-import readlineSync from 'readline-sync';
-
-// Classe Producte
+// cistella.js (Versió fidel a les instruccions)
 class Producte {
     constructor(descripcio, preu) {
         this.descripcio = descripcio;
@@ -13,7 +10,6 @@ class Producte {
     }
 }
 
-// Classe Cistella
 class Cistella {
     constructor() {
         this.productes = [];
@@ -24,24 +20,20 @@ class Cistella {
     }
 
     mostrarCistella() {
-        if (this.productes.length === 0) {
-            console.log('La cistella està buida.');
-            return;
-        }
-
+        let resultat = "Cistella:\n";
         let total = 0;
-        console.log('\nContingut de la cistella:');
-        this.productes.forEach(({ producte, quantitat }, index) => {
+
+        this.productes.forEach(({ producte, quantitat }) => {
             const subtotal = producte.preu * quantitat;
+            resultat += `${producte.toString()} - Quantitat: ${quantitat}, Subtotal: ${subtotal.toFixed(2)} €\n`;
             total += subtotal;
-            console.log(`${index + 1}. ${producte.toString()} x ${quantitat} = ${subtotal.toFixed(2)} €`);
         });
 
-        console.log(`\nTotal: ${total.toFixed(2)} €`);
+        resultat += `Total: ${total.toFixed(2)} €`;
+        console.log(resultat);
     }
 }
 
-// Funció per mostrar ajuda
 function mostraAjuda() {
     console.log('Ajuda. Ordres permeses:\n');
     console.log('\thelp: Mostra aquesta ajuda');
@@ -50,12 +42,11 @@ function mostraAjuda() {
     console.log('\tshow: Mostra el contingut de la cistella');
 }
 
-// Funció per afegir un producte
-function afegirProducte(cistella) {
+function afegirProducteConsola(cistella) {
     const nom = readlineSync.question('Nom del producte: ');
     const preu = readlineSync.question('Preu del producte: ');
-    if (isNaN(preu) || parseFloat(preu) <= 0) {
-        console.log('Error: El preu ha de ser un número positiu.');
+    if (isNaN(preu)) {
+        console.log('Error: El preu ha de ser un número.');
         return;
     }
 
@@ -67,13 +58,11 @@ function afegirProducte(cistella) {
 
     const producte = new Producte(nom, preu);
     cistella.afegirProducte(producte, quantitat);
-    console.log('Producte afegit correctament!');
+    console.log(`Producte afegit: ${producte.toString()} - Quantitat: ${quantitat}`);
 }
 
-// Funció principal
 function iniciarAplicacio() {
     const cistella = new Cistella();
-
     let ordre;
 
     console.log("🎄 Benvingut a l'aplicació de la Cistella de Nadal! 🎄");
@@ -83,10 +72,14 @@ function iniciarAplicacio() {
 
         switch (ordre) {
             case 'add':
-                afegirProducte(cistella);
+                afegirProducteConsola(cistella);
                 break;
             case 'show':
-                cistella.mostrarCistella();
+                if (cistella.productes.length === 0) {
+                    console.log("La cistella està buida.");
+                } else {
+                    cistella.mostrarCistella();
+                }
                 break;
             case 'help':
                 mostraAjuda();
