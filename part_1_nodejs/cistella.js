@@ -1,5 +1,7 @@
+// cistella.js 
 import readlineSync from 'readline-sync';
 
+// Classe Producte
 class Producte {
     constructor(descripcio, preu) {
         this.descripcio = descripcio;
@@ -7,10 +9,11 @@ class Producte {
     }
 
     toString() {
-        return`${this.descripcio} - ${this.preu.toFixed(2)} €`;
+        return `${this.descripcio} - ${this.preu.toFixed(2)} €`;
     }
 }
 
+// Classe Cistella
 class Cistella {
     constructor() {
         this.productes = [];
@@ -21,31 +24,24 @@ class Cistella {
     }
 
     mostrarCistella() {
+        if (this.productes.length === 0) {
+            console.log('La cistella està buida.');
+            return;
+        }
+
         let total = 0;
-        console.log("Cistella:");
-        this.productes.forEach(({ producte, quantitat }) => {
+        console.log('\nContingut de la cistella:');
+        this.productes.forEach(({ producte, quantitat }, index) => {
             const subtotal = producte.preu * quantitat;
             total += subtotal;
-            console.log(`${producte.nom}: ${quantitat} x ${producte.preu.toFixed(2)} = ${subtotal.toFixed(2)}`);
+            console.log(`${index + 1}. ${producte.toString()} x ${quantitat} = ${subtotal.toFixed(2)} €`);
         });
-        console.log(`Preu Total: ${total.toFixed(2)}`);
+
+        console.log(`\nTotal: ${total.toFixed(2)} €`);
     }
 }
 
-class Producte {
-    constructor(nom, preu) {
-        this.nom = nom;
-        this.preu = parseFloat(preu); 
-    }
-}
-
-class Producte {
-    constructor(nom, preu) {
-        this.nom = nom;
-        this.preu = preu;
-    }
-}
-
+// Funció per mostrar ajuda
 function mostraAjuda() {
     console.log('Ajuda. Ordres permeses:\n');
     console.log('\thelp: Mostra aquesta ajuda');
@@ -54,11 +50,12 @@ function mostraAjuda() {
     console.log('\tshow: Mostra el contingut de la cistella');
 }
 
+// Funció per afegir un producte
 function afegirProducte(cistella) {
     const nom = readlineSync.question('Nom del producte: ');
     const preu = readlineSync.question('Preu del producte: ');
-    if (isNaN(preu)) {
-        console.log('Error: El preu ha de ser un número.');
+    if (isNaN(preu) || parseFloat(preu) <= 0) {
+        console.log('Error: El preu ha de ser un número positiu.');
         return;
     }
 
@@ -68,11 +65,12 @@ function afegirProducte(cistella) {
         return;
     }
 
-console.log("Funcionalitat per implementar!!");
-
-    
+    const producte = new Producte(nom, preu);
+    cistella.afegirProducte(producte, quantitat);
+    console.log('Producte afegit correctament!');
 }
 
+// Funció principal
 function iniciarAplicacio() {
     const cistella = new Cistella();
 
@@ -85,11 +83,9 @@ function iniciarAplicacio() {
 
         switch (ordre) {
             case 'add':
-                console.log("Funció per implementar");
                 afegirProducte(cistella);
                 break;
             case 'show':
-                console.log("Funció per implementar");
                 cistella.mostrarCistella();
                 break;
             case 'help':
@@ -104,4 +100,5 @@ function iniciarAplicacio() {
     } while (ordre !== 'exit');
 }
 
+// Iniciar l'aplicació
 iniciarAplicacio();
